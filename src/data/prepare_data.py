@@ -34,7 +34,7 @@ val_transforms = transforms.Compose([
 # ============================
 # 3. تحميل البيانات (ImageFolder)
 # ============================
-data_dir = "E:\FiveLevel\AI\OurProject\AIPROJECT\src\data"  # غيّر المسار إذا بياناتك في مكان ثاني
+data_dir = "E:/FiveLevel/AI/OurProject/AIPROJECT/data/raw"  # غيّر المسار إذا بياناتك في مكان ثاني
 
 image_datasets = {
     'train': datasets.ImageFolder(os.path.join(data_dir, 'train'), train_transforms),
