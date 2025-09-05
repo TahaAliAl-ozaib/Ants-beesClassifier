@@ -48,15 +48,15 @@ AIPROJECT/
 ├── src/
 │   ├── data/
 │   │   └── prepare_data.py
+│   └── models/
+│   └── utils/
+├── data/
 │   ├── train/
 │   │   ├── ants/
 │   │   └── bees/
 │   └── val/
 │       ├── ants/
 │       └── bees/
-│   └── models/
-│   └── utils/
-├── data/
 └── docs/
 
 ---
