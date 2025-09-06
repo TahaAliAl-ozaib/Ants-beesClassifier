@@ -1,29 +1,27 @@
 # src/data/prepare_data.py
 import os
-import platform
-import multiprocessing
 import torch
 from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+from src.utils.data_utils import get_device, print_dataset_info
 
 # ============================
-# 1. تحديد الـ device (GPU / CPU)
+# 1. تحديد الجهاز
 # ============================
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = get_device()
 print(f"Using device: {device}")
 
 # ============================
-# 2. إعداد التحويلات (transforms)
+# 2. إعداد التحويلات
 # ============================
-# للتحسين والتدريب
 train_transforms = transforms.Compose([
-    transforms.Resize((224, 224)),    # إعادة التحجيم
-    transforms.RandomHorizontalFlip(), # انعكاس أفقي عشوائي
-    transforms.ToTensor(),             # تحويل الصورة إلى Tensor
+    transforms.Resize((224, 224)),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406],
-                         [0.229, 0.224, 0.225]) # التطبيع
+                         [0.229, 0.224, 0.225])
 ])
 
-# للتحقق (validation) – فقط إعادة تحجيم وتطبيع
 val_transforms = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -32,40 +30,34 @@ val_transforms = transforms.Compose([
 ])
 
 # ============================
-# 3. تحميل البيانات (ImageFolder)
+# 3. تحديد مسار البيانات
 # ============================
-data_dir = "E:/FiveLevel/AI/OurProject/AIPROJECT/data/raw"  # غيّر المسار إذا بياناتك في مكان ثاني
+data_dir = "data/raw"  # تأكد أن train و val داخل هذا المجلد
 
+# ============================
+# 4. تحميل البيانات
+# ============================
 image_datasets = {
     'train': datasets.ImageFolder(os.path.join(data_dir, 'train'), train_transforms),
     'val': datasets.ImageFolder(os.path.join(data_dir, 'val'), val_transforms)
 }
 
 # ============================
-# 4. إنشاء DataLoader
+# 5. إنشاء DataLoader
 # ============================
 dataloaders = {
-    'train': torch.utils.data.DataLoader(image_datasets['train'], batch_size=32, shuffle=True),
-    'val': torch.utils.data.DataLoader(image_datasets['val'], batch_size=32, shuffle=False)
+    'train': DataLoader(image_datasets['train'], batch_size=32, shuffle=True, num_workers=4),
+    'val': DataLoader(image_datasets['val'], batch_size=32, shuffle=False, num_workers=4)
 }
 
 # ============================
-# 5. استخراج معلومات البيانات
+# 6. استخراج معلومات البيانات
 # ============================
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 class_names = image_datasets['train'].classes
 
 # ============================
-# 6. اختبار سريع
+# 7. اختبار سريع
 # ============================
 if __name__ == "__main__":
-    print("Dataset sizes:", dataset_sizes)
-    print("Classes:", class_names)
-# دالة مساعدة لطباعه ملخص سريع
-def print_dataset_info():
-    print("Device:", device)
-    print("Data dir:", data_dir)
-    print("Num workers:", num_workers)
-    print("Batch size:", batch_size)
-    print("Dataset sizes:", dataset_sizes)
-    print("Classes:", class_names)
+    print_dataset_info(dataset_sizes, class_names)
