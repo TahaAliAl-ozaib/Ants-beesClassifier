@@ -58,7 +58,7 @@ class ImageClassifierModel:
         # Device config
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-        # Model setup (transfer learning with ResNet18) with resnet18 weights
+        # Model setup (transfer learning with ResNet18) with resnet18 weights abdu
         self.model = models.resnet18(pretrained=True)
         num_ftrs = self.model.fc.in_features
         self.model.fc = nn.Linear(num_ftrs, self.num_classes)
