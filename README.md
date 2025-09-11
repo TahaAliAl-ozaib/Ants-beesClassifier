@@ -1,84 +1,120 @@
-# Ant&Bees Classifire AI Project
+# 🐜🐝 Ants vs Bees Classification Project
 
-## Project Description
-A project for image processing and differentiating between ants and bees . The project is also connected to ESP32 via the ESP NOW protocol and MQTT protocol. the project is for learning purposes
+## Overview
+This project classifies images of ants and bees using deep learning with PyTorch. It follows course requirements: Git, UV for dependencies, clear structure, and comprehensive docs.
 
-_______________________________________________________________________________________________________________
 
-## Team Members and Responsibilities
 
-| AC.NO     | Name          |              Role              | Branch |               Contributions                  | Files/Folder |
-|-----------|---------------|--------------------------------|--------|--------------------------------------------------|----------|
-| 202274263 | Taha AL-Ozaib | Lead Developer & Data Engineer | `data` | Data collection, preprocessing, train/test split | `src/data/prepare_data.py`, `data/` |
-| 202274 | Abdulsalam Aldaai | ML Engineer | `models` | Model creation, training, evaluation, hyperparameter tuning | `src/models/` |
-| 202170009 | Sakhr Altyeb | Utils & Deployment | `utils` | Helper functions, visualization, optional Streamlit app | `src/utils/`, `notebooks/`, `docs/` |
 
-____________________________________________________________________________________________________________________________________
-## Installation and Setup
+## Project Structure
+```
+AIPROJECT/
+├── main.py                 # Main training script
+├── config.py              # Configuration settings
+├── src/
+│   ├── data/
+│   │   └── prepare_data.py # Data preparation
+│   └── utils/
+│       └── data_utils.py   # Utility functions
+└── data/
+    └── raw/
+        ├── train/
+        │   ├── ants/
+        │   └── bees/
+        └── val/
+            ├── ants/
+            └── bees/
+```
+
+## Installation and Setup (UV)
 
 ### Prerequisites
 - Python 3.12+
 - UV package manager
-- PyTorch
-- torchvision
-- matplotlib
-- PIL
-____________________________________________________________________________________________________________________________________
-### Installation Steps
-1. Clone repository
+
+### Steps
 ```bash
-git clone https://github.com/TahaAliAl-ozaib/Ants-beesClassifier
-cd AIPROJECT
-
-2. Sync dependencies with UV
-
+# Install deps
 uv sync
 
-3. المشروع تشغيل ملفات 
+# Train
+uv run python main.py
+```
 
-uv run python src/data/prepare_data.py ( uv run python prepare_data.py اكتب (data)واذا_كنت_داخل_ملف)
+## Configuration
+Edit `config.py` to modify:
+- Batch size
+- Number of epochs
+- Learning rate
+- Model architecture
 
----
+## Expected Output
+```
+🐜🐝 Ants vs Bees Classification Project
+==================================================
+📋 Configuration:
+  data_dir: data/raw
+  batch_size: 32
+  num_epochs: 25
 
-Project Structure
+📊 Step 1: Preparing data...
+Using device: cuda:0
+✅ Data preparation completed successfully!
 
-AIPROJECT/
-├── README.md
-├── pyproject.toml
-├── src/
-│   ├── data/
-│   │   └── prepare_data.py
-│   └── models/
-│   └── utils/
-├── data/
-│   ├── train/
-│   │   ├── ants/
-│   │   └── bees/
-│   └── val/
-│       ├── ants/
-│       └── bees/
-└── docs/
+🤖 Step 2: Creating model...
+✅ Model created with 2 classes: ['ants', 'bees']
 
----
+🎯 Step 3: Training model...
+🚀 Starting training for 25 epochs...
+[Training progress...]
 
-Current Progress
+💾 Step 4: Saving model...
+✅ Model saved successfully!
 
-DataLoader جاهز 
+🎉 Project completed successfully!
+```
 
-Dataset sizes:
+## Files Created
+- `ants_bees_model.pth` - Trained model
+- Training logs and metrics
 
-train: 244
+## Usage (Inference)
+Classify a single image and visualize the prediction (example code in notebooks suggested):
+```python
+from torchvision.models import resnet18, ResNet18_Weights
+import torch, torch.nn as nn
+from PIL import Image
+from torchvision import transforms
 
-val: 153
+ckpt = torch.load("ants_bees_model.pth", map_location="cpu")
+classes = ckpt['class_names']
+m = resnet18(weights=ResNet18_Weights.DEFAULT)
+m.fc = nn.Linear(m.fc.in_features, len(classes))
+m.load_state_dict(ckpt['model_state_dict'])
+m.eval()
 
-Classes: ['ants', 'bees']
+val_tfm = transforms.Compose([
+    transforms.Resize((256,256)), transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225]),
+])
 
-التدريب جهاز : CPU 
+img = Image.open("data/raw/val/ants/10308379_1b6c72e180.jpg").convert('RGB')
+x = val_tfm(img).unsqueeze(0)
+with torch.inference_mode():
+    p = torch.softmax(m(x), dim=1)[0]
+conf, idx = torch.max(p, 0)
+print(f"Pred: {classes[idx]} ({conf.item():.2%})")
+```
 
----
+## Team Members
+| AC.NO | Name | Role | Contributions |
+|---|---|---|---|
+| 1 | Your Name | Lead Developer | Data prep, model training |
+| 2 | Teammate | Data Analyst | EDA, visualization |
+| 3 | Teammate | ML Engineer | Optimization, deployment |
 
-Usage
-
-Prepare Data
-
-uv run python src/data/prepare_data.py
+## Next Steps
+1. Test the model on new images
+2. Create inference script
+3. Deploy the model
