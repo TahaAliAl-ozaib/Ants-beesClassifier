@@ -1,3 +1,9 @@
+---
+noteId: "518e79608f5111f0b3faef74c3a7ed14"
+tags: []
+
+---
+
 # Ant&Bees Classifire AI Project
 
 ## Project Description
