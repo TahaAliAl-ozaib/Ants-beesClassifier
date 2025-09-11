@@ -1,8 +1,12 @@
 # src/data/prepare_data.py
 import os
+import sys
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
+
+# Add project root to path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from src.utils.data_utils import get_device, print_dataset_info
 
 # ============================
