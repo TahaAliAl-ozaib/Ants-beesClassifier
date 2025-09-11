@@ -13,7 +13,7 @@ import os
 
 # Import our custom modules
 from src.data.prepare_data import prepare_data
-from src.utils.data_utils import get_device
+from src.utils.data_utils import get_device, seed_everything
 
 def create_model(num_classes=2, pretrained=True):
     """Create and configure the model"""
@@ -128,6 +128,7 @@ def main():
         'num_workers': 4,
         'image_size': 224,
         'num_epochs': 25,
+        'seed': 42,
         'model_save_path': 'ants_bees_model.pth'
     }
     
@@ -135,6 +136,9 @@ def main():
     for key, value in config.items():
         print(f"  {key}: {value}")
     
+    # Step 0: Reproducibility
+    seed_everything(config['seed'])
+
     # Step 1: Prepare data
     print("\n📊 Step 1: Preparing data...")
     try:

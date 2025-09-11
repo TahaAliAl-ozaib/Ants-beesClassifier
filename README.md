@@ -1,7 +1,10 @@
 # 🐜🐝 Ants vs Bees Classification Project
 
 ## Overview
-This project classifies images of ants and bees using deep learning with PyTorch.
+This project classifies images of ants and bees using deep learning with PyTorch. It follows course requirements: Git, UV for dependencies, clear structure, and comprehensive docs.
+
+
+
 
 ## Project Structure
 ```
@@ -23,16 +26,19 @@ AIPROJECT/
             └── bees/
 ```
 
-## Quick Start
+## Installation and Setup (UV)
 
-### 1. Install Dependencies
-```bash
-pip install torch torchvision matplotlib numpy
-```
+### Prerequisites
+- Python 3.12+
+- UV package manager
 
-### 2. Run Training
+### Steps
 ```bash
-python main.py
+# Install deps
+uv sync
+
+# Train
+uv run python main.py
 ```
 
 ## Configuration
@@ -71,6 +77,42 @@ Using device: cuda:0
 ## Files Created
 - `ants_bees_model.pth` - Trained model
 - Training logs and metrics
+
+## Usage (Inference)
+Classify a single image and visualize the prediction (example code in notebooks suggested):
+```python
+from torchvision.models import resnet18, ResNet18_Weights
+import torch, torch.nn as nn
+from PIL import Image
+from torchvision import transforms
+
+ckpt = torch.load("ants_bees_model.pth", map_location="cpu")
+classes = ckpt['class_names']
+m = resnet18(weights=ResNet18_Weights.DEFAULT)
+m.fc = nn.Linear(m.fc.in_features, len(classes))
+m.load_state_dict(ckpt['model_state_dict'])
+m.eval()
+
+val_tfm = transforms.Compose([
+    transforms.Resize((256,256)), transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225]),
+])
+
+img = Image.open("data/raw/val/ants/10308379_1b6c72e180.jpg").convert('RGB')
+x = val_tfm(img).unsqueeze(0)
+with torch.inference_mode():
+    p = torch.softmax(m(x), dim=1)[0]
+conf, idx = torch.max(p, 0)
+print(f"Pred: {classes[idx]} ({conf.item():.2%})")
+```
+
+## Team Members
+| AC.NO | Name | Role | Contributions |
+|---|---|---|---|
+| 1 | Your Name | Lead Developer | Data prep, model training |
+| 2 | Teammate | Data Analyst | EDA, visualization |
+| 3 | Teammate | ML Engineer | Optimization, deployment |
 
 ## Next Steps
 1. Test the model on new images
