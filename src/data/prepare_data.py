@@ -30,9 +30,23 @@ val_transforms = transforms.Compose([
 ])
 
 # ============================
-# 3. تحديد مسار البيانات
+# 3. تحديد مسار البيانات مع اكتشاف تلقائي
 # ============================
-data_dir = "data/raw"  # تأكد أن train و val داخل هذا المجلد
+def _detect_data_root() -> str:
+    candidates = [
+        os.path.join("Data", "raw"),
+        os.path.join("data", "raw"),
+        "Data",
+        "data",
+    ]
+    for candidate in candidates:
+        train_dir = os.path.join(candidate, "train")
+        val_dir = os.path.join(candidate, "val")
+        if os.path.isdir(train_dir) and os.path.isdir(val_dir):
+            return candidate
+    return "data"
+
+data_dir = _detect_data_root()  # تأكد أن train و val داخل هذا المجلد
 
 # ============================
 # 4. تحميل البيانات
