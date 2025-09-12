@@ -1,90 +1,55 @@
----
-noteId: "518e79608f5111f0b3faef74c3a7ed14"
-tags: []
+# 🐜🐝 Ants vs Bees Classification Project
 
----
+## Overview
+This project classifies images of ants and bees using deep learning with PyTorch. It follows course requirements: Git, UV for dependencies, clear structure, and comprehensive docs.
 
-# Ant&Bees Classifire AI Project
+--------------------------------------------------------------------------------------------------------------------------------------------------
+## Team Members
+|  AC.NO   |      Name     |    Role          |                 Contributions                  |
+|----------|---------------|------------------|------------------------------------------------|
+| 202274263| Taha Al-Ozaib | Lead Developer   |         Data preprocessing, Model development  |
+| 202274324| Abdulslam Aldaei |  DL Engineer  |      Optimization, deployment model training   |
+| 202174009| Sakhr Altyeb  |    Data Analyst  |                 EDA, visualization             |
+--------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Project Description
-A project for image processing and differentiating between ants and bees . The project is also connected to ESP32 via the ESP NOW protocol and MQTT protocol. the project is for learning purposes
+## Project Structure
+```
+AIPROJECT/
+├── main.py                 # Main training script
+├── config.py              # Configuration settings
+├── src/
+│   ├── data/
+│   │   └── prepare_data.py # Data preparation
+│   └── utils/
+│       └── data_utils.py   # Utility functions
+└── data/
+    └── raw/
+        ├── train/
+        │   ├── ants/
+        │   └── bees/
+        └── val/
+            ├── ants/
+            └── bees/
+```
 
-_______________________________________________________________________________________________________________
-
-## Team Members and Responsibilities
-
-| AC.NO     | Name          |              Role              | Branch |               Contributions                  | Files/Folder |
-|-----------|---------------|--------------------------------|--------|--------------------------------------------------|----------|
-| 202274263 | Taha AL-Ozaib | Lead Developer & Data Engineer | `data` | Data collection, preprocessing, train/test split | `src/data/prepare_data.py`, `data/` |
-| 202274 | Abdulsalam Aldaai | ML Engineer | `models` | Model creation, training, evaluation, hyperparameter tuning | `src/models/` |
-| 202170009 | Sakhr Altyeb | Utils & Deployment | `utils` | Helper functions, visualization, optional Streamlit app | `src/utils/`, `notebooks/`, `docs/` |
-
-____________________________________________________________________________________________________________________________________
-## Installation and Setup
+## Installation and Setup (UV)
 
 ### Prerequisites
 - Python 3.12+
 - UV package manager
-- PyTorch
-- torchvision
-- matplotlib
-- PIL
-____________________________________________________________________________________________________________________________________
-### Installation Steps
-1. Clone repository
+
+### Steps
 ```bash
-git clone https://github.com/TahaAliAl-ozaib/Ants-beesClassifier
-cd AIPROJECT
-
-2. Sync dependencies with UV
-
+# Install deps
 uv sync
 
-3. المشروع تشغيل ملفات 
+# Train
+uv run python main.py
+```
 
-uv run python src/data/prepare_data.py ( uv run python prepare_data.py اكتب (data)واذا_كنت_داخل_ملف)
-
----
-
-Project Structure
-
-AIPROJECT/
-├── README.md
-├── pyproject.toml
-├── src/
-│   ├── data/
-│   │   └── prepare_data.py
-│   └── models/
-│   └── utils/
-├── data/
-│   ├── train/
-│   │   ├── ants/
-│   │   └── bees/
-│   └── val/
-│       ├── ants/
-│       └── bees/
-└── docs/
-
----
-
-Current Progress
-
-DataLoader جاهز 
-
-Dataset sizes:
-
-train: 244
-
-val: 153
-
-Classes: ['ants', 'bees']
-
-التدريب جهاز : CPU 
-
----
-
-Usage
-
-Prepare Data
-
-uv run python src/data/prepare_data.py
+## Configuration
+Edit `config.py` to modify:
+- Batch size
+- Number of epochs
+- Learning rate
+- Model architecture
