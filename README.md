@@ -31,16 +31,28 @@ AIPROJECT/
 ### Prerequisites
 - Python 3.12+
 - UV package manager
+- Python 3.12.4 (specified in `.python-version`)
+- UV package manager
 
-### Steps
+### Installation Steps
+1. Clone the repository:
 ```bash
-# Install deps
-uv sync
-
-# Train
-uv run python main.py
+   git clone https://github.com/TahaAliAl-ozaib/Ants-beesClassifier
+   cd Ants-beesClassifier
 ```
 
+2. Install dependencies using UV:
+```bash
+    uv sync
+```
+3. Run the project:
+```bash
+   uv run python main.py
+   ```
+# Run the training script
+    ```bash
+      uv run python src/models/train.py
+    ```
 ## Configuration
 Edit `config.py` to modify:
 - Batch size
@@ -78,6 +90,10 @@ Using device: cuda:0
 - `ants_bees_model.pth` - Trained model
 - Training logs and metrics
 
+**Usage:**
+```bash
+uv run streamlit run test.py
+```
 ## Usage (Inference)
 Classify a single image and visualize the prediction (example code in notebooks suggested):
 ```python
