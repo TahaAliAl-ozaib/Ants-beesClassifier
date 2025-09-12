@@ -4,7 +4,8 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 import torch.backends.cudnn as cudnn
 import torchvision
-from torchvision import datasets, models, transforms
+from torchvision.models import resnet18, ResNet18_Weights
+import copy
 import time
 import os
 
@@ -12,54 +13,26 @@ cudnn.benchmark = True
 
 
 class ImageClassifierModel:
-    def __init__(self, data_dir, num_classes=2, batch_size=4, num_epochs=25):
+    def __init__(self, data_dir, num_classes=2, batch_size=4, num_workers=4, num_epochs=25):
         self.data_dir = data_dir
         self.num_classes = num_classes
         self.batch_size = batch_size
+        self.num_workers = num_workers
         self.num_epochs = num_epochs
 
-        # Data augmentation and normalization
-        self.data_transforms = {
-            'train': transforms.Compose([
-                transforms.RandomResizedCrop(224),
-                transforms.RandomHorizontalFlip(),
-                transforms.ToTensor(),
-                transforms.Normalize([0.485, 0.456, 0.406],
-                                     [0.229, 0.224, 0.225])
-            ]),
-            'val': transforms.Compose([
-                transforms.Resize(256),
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                transforms.Normalize([0.485, 0.456, 0.406],
-                                     [0.229, 0.224, 0.225])
-            ]),
-        }
+        # Device and dataloaders from shared utils
+        from src.utils.data_utils import get_device, create_dataloaders
+        self.device = get_device()
+        self.dataloaders, self.dataset_sizes, self.class_names = create_dataloaders(
+            data_dir=self.data_dir,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            image_size=224,
+            device=self.device,
+        )
 
-        # Load datasets
-        self.image_datasets = {
-            x: datasets.ImageFolder(os.path.join(self.data_dir, x),
-                                    self.data_transforms[x])
-            for x in ['train', 'val']
-        }
-
-        # Data loaders
-        self.dataloaders = {
-            x: torch.utils.data.DataLoader(self.image_datasets[x],
-                                           batch_size=self.batch_size,
-                                           shuffle=True,
-                                           num_workers=0)
-            for x in ['train', 'val']
-        }
-
-        self.dataset_sizes = {x: len(self.image_datasets[x]) for x in ['train', 'val']}
-        self.class_names = self.image_datasets['train'].classes
-
-        # Device config
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-        # Model setup (transfer learning with ResNet18) with resnet18 weights abdu
-        self.model = models.resnet18(pretrained=True)
+        # Model setup (transfer learning with ResNet18) using new weights API
+        self.model = resnet18(weights=ResNet18_Weights.DEFAULT)
         num_ftrs = self.model.fc.in_features
         self.model.fc = nn.Linear(num_ftrs, self.num_classes)
         self.model = self.model.to(self.device)
@@ -71,7 +44,7 @@ class ImageClassifierModel:
 
     def train_model(self):
         since = time.time()
-        best_model_wts = self.model.state_dict()
+        best_model_wts = copy.deepcopy(self.model.state_dict())
         best_acc = 0.0
 
         for epoch in range(self.num_epochs):
@@ -116,7 +89,7 @@ class ImageClassifierModel:
                 # Save best model
                 if phase == 'val' and epoch_acc > best_acc:
                     best_acc = epoch_acc
-                    best_model_wts = self.model.state_dict()
+                    best_model_wts = copy.deepcopy(self.model.state_dict())
 
             print()
 
