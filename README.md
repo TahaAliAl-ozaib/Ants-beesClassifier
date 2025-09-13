@@ -1,26 +1,31 @@
-# 🐜🐝 Ants vs Bees Classification Project
+# Ants vs Bees Classification Project
 
 ## Overview
 This project classifies images of ants and bees using deep learning with PyTorch. It follows course requirements: Git, UV for dependencies, clear structure, and comprehensive docs.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------
-## Team Members
-|  AC.NO   |      Name     |    Role          |                 Contributions                  |
-|----------|---------------|------------------|------------------------------------------------|
-| 202274263| Taha Al-Ozaib | Lead Developer   |         Data preprocessing, Model development  |
-| 202274324| Abdulslam Aldaei |  DL Engineer  |      Optimization, deployment model training   |
-| 202174009| Sakhr Altyeb  |    Data Analyst  |                 EDA, visualization             |
+    ## Team Members
+    |  AC.NO   |      Name     |    Role          |                     Contributions                  |
+    |----------|---------------|------------------|------------------------------------------------|
+    | 202274263| Taha Al-Ozaib | Lead Developer   |         Data preprocessing, Model development  |
+    | 202274324| Abdulslam Aldaei |  DL Engineer  |      Optimization, deployment     model training   |
+    | 202174009| Sakhr Altyeb  |    Data Analyst  |                 EDA,    visualization             |
 --------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Project Structure
 ```
 AIPROJECT/
+├── test.py                 # Model Testing
+├── REDAME.md
 ├── main.py                 # Main training script
-├── config.py              # Configuration settings
+├── config.py               # Configuration settings
 ├── src/
 │   ├── data/
 │   │   └── prepare_data.py # Data preparation
-│   └── utils/
+│   ├── models/
+|   |   ├── model.py        # Image classification system 
+|   |   └── train.py        # Model Training
+|   └── utils/
 │       └── data_utils.py   # Utility functions
 └── data/
     └── raw/
@@ -30,6 +35,9 @@ AIPROJECT/
         └── val/
             ├── ants/
             └── bees/
+└──norebooks/
+    ├── EDA.pynb            # Visualization
+    └── notes.ipynb         # 
 ```
 
 ## Installation and Setup (UV)
@@ -71,31 +79,6 @@ Edit `config.py` to modify:
 - Model architecture
 
 
-## Expected Output
-```
-🐜🐝 Ants vs Bees Classification Project
-==================================================
-📋 Configuration:
-  data_dir: data/raw
-  batch_size: 32
-  num_epochs: 25
-
-📊 Step 1: Preparing data...
-Using device: cuda:0
-✅ Data preparation completed successfully!
-
-🤖 Step 2: Creating model...
-✅ Model created with 2 classes: ['ants', 'bees']
-
-🎯 Step 3: Training model...
-🚀 Starting training for 25 epochs...
-[Training progress...]
-
-💾 Step 4: Saving model...
-✅ Model saved successfully!
-
-🎉 Project completed successfully!
-```
 
 ## Files Created
 - `ants_bees_model.pth` - Trained model
