@@ -24,7 +24,7 @@ MODEL_CONFIG = {
 
 # Training configuration
 TRAINING_CONFIG = {
-    'num_epochs': 2,
+    'num_epochs': 1,
     'learning_rate': 0.001,
     'momentum': 0.9,
     'weight_decay': 1e-4,
@@ -35,7 +35,7 @@ TRAINING_CONFIG = {
 
 # Paths configuration
 PATHS_CONFIG = {
-    'model_save_path': 'ants_bees_model.pth',
+    'model_save_path': 'checkpoints/ants_bees_model.pth',
     'logs_dir': 'logs',
     'results_dir': 'results',
     'checkpoints_dir': 'checkpoints'
