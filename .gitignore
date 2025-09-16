@@ -15,6 +15,7 @@ venv/
 *.json
 *.pkl
 *.h5
+*.pth
 
 # Results
 *.png
