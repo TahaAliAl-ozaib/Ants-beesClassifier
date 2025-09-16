@@ -6,14 +6,15 @@ This script coordinates data preparation and model training
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.optim import lr_scheduler
+import torch.optim as optim  #فيها خوارزمية التحسين SGD 
+from torch.optim import lr_scheduler #تغييير معدل التعلم مع الوقت 
 import time
 import os
 
 # Import our custom modules
 from src.data.prepare_data import prepare_data
 from src.utils.data_utils import get_device, seed_everything
+from config import CONFIG, DATA_CONFIG # ⬅️ استيراد الإعدادات من ملف config.py
 
 def create_model(num_classes=2, pretrained=True):
     """Create and configure the model"""
@@ -28,13 +29,23 @@ def create_model(num_classes=2, pretrained=True):
     
     return model
 
-def train_model(model, dataloaders, dataset_sizes, device, num_epochs=25):
+def train_model(model, dataloaders, dataset_sizes, device, num_epochs=2):
     """Train the model"""
     
     # Loss function and optimizer
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-    scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
+    criterion = nn.CrossEntropyLoss() # خوارزمية الخسارة   ("استخدمنا CrossEntropyLoss لأنها الأنسب لمشاكل التصنيف متعدد الفئات .)
+    # الفكرة إنها تقارن بين التوزيع اللي يتنبأ فيه النموذج ) probabilities ( وبين الفئة الصحيحة ) label .)
+    optimizer = optim.SGD(      # خوارزمية التحسين SGD
+        model.parameters(),
+        lr=CONFIG['training']['learning_rate'],
+        momentum=CONFIG['training']['momentum'],
+        weight_decay=CONFIG['training']['weight_decay']
+    )
+    scheduler = lr_scheduler.StepLR(
+        optimizer,
+        step_size=CONFIG['training']['step_size'],
+        gamma=CONFIG['training']['gamma']
+    )
     
     # Move model to device
     model = model.to(device)
@@ -122,31 +133,23 @@ def main():
     print("="*50)
     
     # Configuration
-    config = {
-        'data_dir': 'data/raw',
-        'batch_size': 32,
-        'num_workers': 4,
-        'image_size': 224,
-        'num_epochs': 25,
-        'seed': 42,
-        'model_save_path': 'ants_bees_model.pth'
-    }
-    
+
+    config = CONFIG    
     print("📋 Configuration:")
-    for key, value in config.items():
+    for key, value in DATA_CONFIG.items():
         print(f"  {key}: {value}")
     
     # Step 0: Reproducibility
-    seed_everything(config['seed'])
+    seed_everything(DATA_CONFIG['seed'])
 
     # Step 1: Prepare data
     print("\n📊 Step 1: Preparing data...")
     try:
         dataloaders, dataset_sizes, class_names = prepare_data(
-            data_dir=config['data_dir'],
-            batch_size=config['batch_size'],
-            num_workers=config['num_workers'],
-            image_size=config['image_size']
+            data_dir=config['data']['data_dir'],
+            batch_size=config['data']['batch_size'],
+            num_workers=config['data']['num_workers'],
+            image_size=config['data']['image_size']
         )
         print("✅ Data preparation completed successfully!")
     except Exception as e:
@@ -174,7 +177,7 @@ def main():
             dataloaders=dataloaders,
             dataset_sizes=dataset_sizes,
             device=device,
-            num_epochs=config['num_epochs']
+            num_epochs=config['training']['num_epochs']
         )
         print("✅ Model training completed successfully!")
     except Exception as e:
@@ -184,7 +187,7 @@ def main():
     # Step 5: Save model
     print("\n💾 Step 4: Saving model...")
     try:
-        save_model(trained_model, class_names, config['model_save_path'])
+        save_model(trained_model, class_names, config['paths']['model_save_path'])
         print("✅ Model saved successfully!")
     except Exception as e:
         print(f"❌ Error saving model: {e}")
@@ -193,7 +196,7 @@ def main():
     print("\n🎉 Project completed successfully!")
     print("="*50)
     print("📁 Files created:")
-    print(f"  - Trained model: {config['model_save_path']}")
+    print(f"  - Trained model: {config['paths']['model_save_path']}")
     print("\n🚀 Next steps:")
     print("  1. Test the model on new images")
     print("  2. Create an inference script")

@@ -1,7 +1,7 @@
-# 🐜🐝 Ants vs Bees Classification Project
+    # Ants vs Bees Classification Project
 
 ## Overview
-This project classifies images of ants and bees using deep learning with PyTorch. It follows course requirements: Git, UV for dependencies, clear structure, and comprehensive docs.
+This project classifies images of ants and bees using deep learning with PyTorch. 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------
     ## Team Members
@@ -27,17 +27,20 @@ AIPROJECT/
 |   |   └── train.py        # Model Training
 |   └── utils/
 │       └── data_utils.py   # Utility functions
-└── data/
-    └── raw/
-        ├── train/
-        │   ├── ants/
-        │   └── bees/
-        └── val/
-            ├── ants/
-            └── bees/
-└──norebooks/
-    ├── EDA.pynb
-    └── notes.ipynb             
+├── data/
+|    └── raw/
+|       ├── train/
+|       │   ├── ants/
+|       │   └── bees/
+|       └── val/
+|           ├── ants/
+|           └── bees/
+├──norebooks/
+|   ├── EDA.pynb            # Visualization
+|   └── notes.ipynb         # 
+└── docs/                   # Additional documentation
+    └── Exp.ipyb
+
 ```
 
 ## Installation and Setup (UV)

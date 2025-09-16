@@ -10,7 +10,8 @@ DATA_CONFIG = {
     'num_workers': 4,
     'image_size': 224,
     'train_ratio': 0.8,
-    'val_ratio': 0.2
+    'val_ratio': 0.2,
+    'seed':42
 }
 
 # Model configuration
@@ -23,7 +24,7 @@ MODEL_CONFIG = {
 
 # Training configuration
 TRAINING_CONFIG = {
-    'num_epochs': 25,
+    'num_epochs': 2,
     'learning_rate': 0.001,
     'momentum': 0.9,
     'weight_decay': 1e-4,
