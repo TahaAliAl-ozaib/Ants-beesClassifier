@@ -23,6 +23,7 @@ venv/
 *.pdf
 *.pth
 results/
+checkpoints/
 
 # IDE
 .vscode/
