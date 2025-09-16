@@ -1,3 +1,9 @@
+# test.py
+"""
+Inference script for Ants vs Bees Classification Project
+Uses centralized configuration from config.py
+"""
+
 import torch
 import torch.nn as nn
 from torchvision import transforms
@@ -6,6 +12,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 from src.utils.data_utils import get_device
+from config import CONFIG  # ⬅️ استيراد الإعدادات
 
 
 def build_val_transforms(image_size: int = 224):
@@ -32,7 +39,8 @@ def load_model(model_path: str, device: torch.device):
 
 
 @torch.inference_mode()
-def predict(image_path: str, model_path: str, image_size: int = 224, show: bool = True, save_path: str | None = None):
+def predict(image_path: str, model_path: str, image_size: int = 224,
+            show: bool = True, save_path: str | None = None):
     device = get_device()
     model, class_names = load_model(model_path, device)
     tfm = build_val_transforms(image_size)
@@ -46,11 +54,9 @@ def predict(image_path: str, model_path: str, image_size: int = 224, show: bool 
     label = class_names[pred_idx.item()]
 
     print(f"Predicted: {label} (confidence: {conf.item():.4f})")
-    # Also print per-class probabilities
     for i, cls in enumerate(class_names):
         print(f"  {cls}: {probs[i].item():.4f}")
 
-    # Visualization
     if show or save_path:
         plt.figure(figsize=(6, 6))
         plt.imshow(img)
@@ -63,23 +69,21 @@ def predict(image_path: str, model_path: str, image_size: int = 224, show: bool 
         if show:
             plt.show()
 
-
 def main():
-    # Configure your test here (no terminal arguments needed)
-    image_path = "data/raw/val/ants/10308379_1b6c72e180.jpg"  # ضع مسار الصورة هنا
-    model_path = "ants_bees_model.pth"
-    image_size = 224
-    show_image = True
-    save_path = None  # مثال: "prediction.png" لحفظ النتيجة
+    # جلب الإعدادات من config.py
+    model_path = CONFIG['paths']['model_save_path']
+    image_size = CONFIG['data']['image_size']
+
+    # 🔽 نغير هذا المسار فقط عند الاختبار
+    image_path = "data/raw/val/ants/10308379_1b6c72e180.jpg"
 
     predict(
         image_path=image_path,
         model_path=model_path,
         image_size=image_size,
-        show=show_image,
-        save_path=save_path,
+        show=True,
+        save_path=None  # مثال: "prediction.png"
     )
+
 if __name__ == '__main__':
     main()
-
-
