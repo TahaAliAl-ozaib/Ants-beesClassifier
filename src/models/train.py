@@ -1,18 +1,8 @@
-import argparse
+# src/models/train.py
 import os
 import torch
-
 from src.models.model import ImageClassifierModel
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Train Ants vs Bees classifier")
-    parser.add_argument("--data-dir", type=str, default=None, help="Root folder containing train/ and val/")
-    parser.add_argument("--epochs", type=int, default=10)
-    parser.add_argument("--batch-size", type=int, default=16)
-    parser.add_argument("--num-classes", type=int, default=2)
-    parser.add_argument("--save-path", type=str, default=os.path.join("notebooks", "ant_bee_model.pt"))
-    return parser.parse_args()
+from config import CONFIG
 
 
 def detect_data_root(provided_path: str | None = None) -> str:
@@ -33,23 +23,22 @@ def detect_data_root(provided_path: str | None = None) -> str:
 
 
 def main() -> None:
-    args = parse_args()
-    data_root = detect_data_root(args.data_dir)
+    # اختيار مصدر البيانات من CONFIG
+    data_root = detect_data_root(CONFIG['data']['data_dir'])
 
+    # بناء نموذج باستخدام الإعدادات
     model_wrapper = ImageClassifierModel(
         data_dir=data_root,
-        num_classes=args.num_classes,
-        batch_size=args.batch_size,
-        num_epochs=args.epochs,
+        num_classes=CONFIG['model']['num_classes'],
+        batch_size=CONFIG['data']['batch_size'],
+        num_epochs=CONFIG['training']['num_epochs'],
     )
 
+    # تدريب النموذج
     model = model_wrapper.train_model()
-    os.makedirs(os.path.dirname(args.save_path), exist_ok=True)
-    torch.save(model.state_dict(), args.save_path)
-    print(f"Saved model weights to: {args.save_path}")
 
-
-if __name__ == "__main__":
-    main()
-
-
+    # حفظ النتائج
+    save_path = CONFIG['paths']['model_save_path']
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    torch.save(model.state_dict(), save_path)
+    print(f"✅ Model saved to: {save_path}")
