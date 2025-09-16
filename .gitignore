@@ -21,6 +21,7 @@ venv/
 *.png
 *.jpg
 *.pdf
+*.pth
 results/
 
 # IDE
