@@ -27,19 +27,20 @@ AIPROJECT/
 |   |   └── train.py        # Model Training
 |   └── utils/
 │       └── data_utils.py   # Utility functions
-└── data/
-    └── raw/
-        ├── train/
-        │   ├── ants/
-        │   └── bees/
-        └── val/
-            ├── ants/
-            └── bees/
-└──norebooks/
-    ├── EDA.pynb            # Visualization
-    └── notes.ipynb         # 
+├── data/
+|    └── raw/
+|       ├── train/
+|       │   ├── ants/
+|       │   └── bees/
+|       └── val/
+|           ├── ants/
+|           └── bees/
+├──norebooks/
+|   ├── EDA.pynb            # Visualization
+|   └── notes.ipynb         # 
 └── docs/                   # Additional documentation
     └── Exp.ipyb
+
 ```
 
 ## Installation and Setup (UV)
